@@ -110,9 +110,11 @@ class TopicForm(FlaskForm):
 # Hint: TopicForm objects have `title` and `content` attributes. Can
 # you modify them?
 
-class SpecialTopicForm(TopicForm):
-    # ADD CODE HERE
-    pass
+class SpecialTopicForm(TopicForm):    
+    def __init__(self, *args, **kwargs):
+       TopicForm.__init__(self, *args, **kwargs)
+       self.title.process_data(f'Special Topic: {self.title.data}')
+       self.content.process_data(f'Special Topic: {self.content.data}')
 
 ###################################################################
 
