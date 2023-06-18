@@ -10,3 +10,10 @@
 # ADD CODE HERE
 
 ###################################################################
+
+
+def test_index(application, default_settings, default_groups, translations):
+    with application.test_client() as client:
+        response = client.get('/')
+        assert response.status_code == 200
+        assert b"Board" in response.data

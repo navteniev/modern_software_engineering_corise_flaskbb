@@ -111,7 +111,10 @@ class TopicForm(FlaskForm):
 # you modify them?
 
 class SpecialTopicForm(TopicForm):
-    # ADD CODE HERE
+    def __init__(self, *args, **kwargs):
+        TopicForm.__init__(self, *args, **kwargs)
+        self.title.process_data(f"Special Topic: {self.title.data}")
+        self.content.process_data(f"Special Topic: {self.content.data}")
     pass
 
 ###################################################################
