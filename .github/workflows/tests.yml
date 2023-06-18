@@ -31,7 +31,7 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
         
@@ -46,19 +46,28 @@ jobs:
         key: pip|${{ runner.os }}|${{ matrix.python-version }}|${{ hashFiles('requirements*.txt') }}
 
     - name: Install dependencies
+      run:
         # Install all the dependencies
         # TODO: ADD CODE HERE
+        python -m pip install --upgrade pip
+        pip install wheel
+        pip install -r requirements-dev.txt
+        pip install -e .
+        playwrite install
+        playwrite install-deps
 
     - name: Prepare FlaskBB
       run: |
         flaskbb translations compile
         
     - name: Test with pytest
-        # Implement test step
-        # TODO: ADD CODE HERE
+      run: |
+        pytest --cov=./ --cov-report=html
         
     - name: Upload coverage
-        # Implement coverage step
-        # TODO: ADD CODE HERE
+    uses: actions/upload-artifact@v3
+    with:
+      name: code coverage report
+      path: tests/htmlcov/
       
 ###################################################################
