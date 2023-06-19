@@ -25,13 +25,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.10]
+        python-version: ["3.10"]
 
     steps:
     - uses: actions/checkout@v2
     
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
         
@@ -48,7 +48,15 @@ jobs:
     - name: Install dependencies
         # Install all the dependencies
         # TODO: ADD CODE HERE
-        postCreateCommand: "/home/vscode/venv/bin/pip --disable-pip-version-check --no-cache-dir install -r requirements-dev.txt && /home/vscode/venv/bin/playwright install && /home/vscode/venv/bin/playwright install-deps"
+        #"/home/vscode/venv/bin/pip --disable-pip-version-check --no-cache-dir install -r requirements-dev.txt && /home/vscode/venv/bin/playwright install && /home/vscode/venv/bin/playwright install-deps",
+      run: |
+        python -m pip install --upgrade pip
+        pip install wheel
+        pip install-r requirements-dev.txt 
+        pip install -e .
+        playwright install
+        playwright install-deps
+
 
     - name: Prepare FlaskBB
       run: |
@@ -57,9 +65,16 @@ jobs:
     - name: Test with pytest
         # Implement test step
         # TODO: ADD CODE HERE
+      run:
+          pytest tests/
         
     - name: Upload coverage
         # Implement coverage step
         # TODO: ADD CODE HERE
+      uses: actions/upload-artifact@v3
+      with:
+        name: code coverage report
+        path: tests/htmlcov/
+
       
 ###################################################################
