@@ -48,6 +48,7 @@ jobs:
     - name: Install dependencies
         # Install all the dependencies
         # TODO: ADD CODE HERE
+        postCreateCommand: "/home/vscode/venv/bin/pip --disable-pip-version-check --no-cache-dir install -r requirements-dev.txt && /home/vscode/venv/bin/playwright install && /home/vscode/venv/bin/playwright install-deps"
 
     - name: Prepare FlaskBB
       run: |
