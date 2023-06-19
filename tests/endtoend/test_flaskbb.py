@@ -18,7 +18,12 @@ os.environ["FLASK_ENV"] = "development"
 
 # ADD CODE HERE
 
-@pytest.fixture
+
+@pytest.fixture()
+def translations():
+    compile_translations(include_plugins=False)
+
+@pytest.fixture(scope="session")
 def app():
     # Hint: create the app, and setup any default context like translations,
     # settings, DB, etc.
