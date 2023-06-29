@@ -23,9 +23,9 @@ jobs:
     steps:
       # Clone the repository.
       - uses: actions/checkout@v2
-        # with:
+        with:
           # This is required or we end up in detached head state & thus cannot push any changes.
-          # ref: ${{ github.head_ref }}
+          ref: ${{ github.head_ref }}
       # Download & set up the terraform CLI.
       - name: Set up terraform CLI
         uses: hashicorp/setup-terraform@v1
