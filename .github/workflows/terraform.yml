@@ -64,7 +64,6 @@ jobs:
         working-directory: ./terraform
         id: init
         run: terraform init -input=false
-      # CoRise TODO: Validate the terraform plan (if on a PR branch).
       - name: terraform validate
         working-directory: ./terraform
         if: ${{ github.event_name == 'pull_request' }}
