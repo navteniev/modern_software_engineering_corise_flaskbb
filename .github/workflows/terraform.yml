@@ -15,7 +15,8 @@ on:
             - '.github/workflows/terraform.yaml'
 jobs:
   format:
-
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
 
     name: Format
