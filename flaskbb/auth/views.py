@@ -153,6 +153,7 @@ class Register(MethodView):
         form.process(request.form)  # needed because a default is overriden
         return form
 
+    # CoRise TODO: increment the page visit counter
     def get(self):
         return render_template("auth/register.html", form=self.form())
 
