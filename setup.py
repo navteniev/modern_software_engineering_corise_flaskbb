@@ -63,6 +63,7 @@ install_requires = [
     "Unidecode>=1.2.0",
     "urllib3>=1.26.6",
     "vine>=5.0.0",
+    "watchtower>=3.0.1",
     "wcwidth>=0.2.5",
     "Werkzeug>=2.0.1",
     "Whoosh>=2.7.4",
