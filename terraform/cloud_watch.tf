@@ -91,11 +91,22 @@ resource "aws_cloudwatch_dashboard" "flaskbb_main" {
 resource "aws_cloudwatch_metric_alarm" "bot_attack" {
   alarm_name                = "bot_attack"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
-  evaluation_periods        = 2
+  evaluation_periods        = 1
+  metric_name = "$auth/register_visitor_count"
+  namespace = "flaskbb_app"
+  period = 60
+  statistic = "Sum"
+  threshold = 10
+  alarm_description = "The bots area attacking our forum, help us Neo!"
 }
 
 resource "aws_cloudwatch_metric_alarm" "too_busy" {
   alarm_name                = "too_busy"
   comparison_operator       = "LessThanOrEqualToThreshold"
-  evaluation_periods        = 2
+  evaluation_periods        = 1
+  metric_name = "CPUIdle"
+  namespace = "AWS/ElasticBeanstalk"
+  period = 300
+  statistic = "Average"
+  alarm_description = "Hey, I'd doing real work here, what give! I need a break!"
 }
