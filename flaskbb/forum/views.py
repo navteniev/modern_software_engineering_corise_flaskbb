@@ -50,6 +50,7 @@ logger = logging.getLogger(__name__)
 
 class ForumIndex(MethodView):
 
+    # CoRise TODO: incement the page visit counter in this method
     def get(self):
         categories = Category.get_all(user=real(current_user))
 
