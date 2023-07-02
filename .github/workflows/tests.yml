@@ -85,7 +85,6 @@ jobs:
         name: code coverage report
         path: tests/htmlcov/
 
-    - name: Build binary distribution and upload to artifactory
-        # CoRise TODO: implement a conditional step to build the distribution and upload the artifact on push to main
-        # use the python bdist command.
-       
+    - name: Build binary distribution
+      if: github.ref == 'refs/heads/main' # This step runs only when changes are pushed to the main branch
+      run: python setup.py bdist # build binary distribution
