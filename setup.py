@@ -11,6 +11,7 @@ install_requires = [
     "Babel>=2.9.1",
     "billiard>=3.6.4.0",
     "blinker>=1.4",
+    "boto3>=1.26.165",
     "celery>=5.1.2",
     "certifi>=2021.5.30",
     "charset-normalizer>=2.0.3",

@@ -4,6 +4,7 @@ attrs==21.4.0
 Babel==2.10.1
 billiard==3.6.4.0
 blinker==1.4
+boto3==1.26.165
 celery==5.2.7
 certifi==2022.5.18.1
 charset-normalizer==2.0.12
