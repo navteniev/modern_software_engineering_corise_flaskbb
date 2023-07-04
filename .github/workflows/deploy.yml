@@ -13,16 +13,29 @@ jobs:
         runs-on: ubuntu-latest
         if: ${{ github.event.workflow_run.conclusion == 'success' }} # Only when test completed successfully 
         steps:
-            - name: Download latest build
-              uses: actions/download-artifact@v3
-              with: # CoRise TODO provide the name of the artifact build in the test workflow
+            - uses: actions/checkout@v2
+            - name: Install dependencies
+              run: |
+                python -m pip install --upgrade pip
+                pip install wheel
+                pip install -r requirements-dev.txt
+                pip install -e .
+      
+            - name: Prepare FlaskBB
+              run: |
+                flaskbb translations compile
+
+            - name: Build binary distribution and upload to artifactory
+            # CoRise TODO: implement a conditional step to build the distribution and upload the artifact on push to main
+            # use the zip command from deploy.sh for inspiration
+              run: echo "implement me"
 
             - name: Congifure AWS Credentials
-              uses: aws-actions/configure-aws-credentials
+              uses: aws-actions/configure-aws-credentials@v2
               with:
                 aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
                 aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
-                aws-region: "your_aws_region" # CoRise TODO fill in the region that you will be using.
+                aws-region: 'your_aws_region' # CoRise TODO fill in the region that you will be using.
 
             - name: Upload application file to AWS
               run: aws s3 cp your_application.zip s3://your_s3_bucket_name # CoRise TODO filling the name of the aprlication file and the name of the bucket you created

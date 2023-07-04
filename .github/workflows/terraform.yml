@@ -52,9 +52,11 @@ jobs:
       # CoRise TODO: Validate the terraform plan (if on a PR branch).
       - name: terraform validate
         working-directory: ./terraform
+        run: echo "TODO"
       # CoRise TODO: Prepare the terraform plan (if on a PR branch).
       - name: terraform plan
         working-directory: ./terraform
+        run: echo "TODO"
       # CoRise TODO: Fail the job if the plan failed
       - name: pass or fail
         uses: actions/github-script@v6
@@ -62,6 +64,7 @@ jobs:
       - name: terraform apply
         id: apply
         working-directory: ./terraform
+        run: echo "TODO"
 
 
 
