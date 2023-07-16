@@ -15,7 +15,7 @@ jobs:
         steps:
             - name: Download latest build
               uses: actions/download-artifact@v3
-              with: # CoRise TODO provide the name of the artifact build in the test workflow
+              with: "flaskbb_app-${{ github.sha }}.zip"
 
             - name: Congifure AWS Credentials
               uses: aws-actions/configure-aws-credentials
