@@ -16,7 +16,7 @@ jobs:
             - name: Download latest build
               uses: actions/download-artifact@v3
               with: 
-                name: "flaskbb_app-${{ github.sha }}.zip"
+                path: "flaskbb_app-${{ github.sha }}.zip"
 
             - name: Congifure AWS Credentials
               uses: aws-actions/configure-aws-credentials
