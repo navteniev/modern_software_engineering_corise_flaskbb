@@ -15,7 +15,7 @@ on:
       - '**/AUTHORS'
       - '**/LICENSE'
       - 'terraform/**'
-      - .github/workflows/terraform.yml
+      - '.github/workflows/terraform.yml'
   pull_request:
     branches: [ main ]
     paths-ignore:
@@ -27,7 +27,7 @@ on:
       - '**/AUTHORS'
       - '**/LICENSE'
       - 'terraform/**'
-      - .github/workflows/terraform.yml
+      - '.github/workflows/terraform.yml'
 
 jobs:
   build:
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.10]
+        python-version: ["3.10"]
 
     steps:
     - uses: actions/checkout@v2
