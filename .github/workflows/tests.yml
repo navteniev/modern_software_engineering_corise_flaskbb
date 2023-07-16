@@ -15,7 +15,7 @@ on:
       - '**/AUTHORS'
       - '**/LICENSE'
       - 'terraform/**'
-      - '.github/workflows/terraform.yml'
+      - .github/workflows/terraform.yml
   pull_request:
     branches: [ main ]
     paths-ignore:
@@ -27,7 +27,7 @@ on:
       - '**/AUTHORS'
       - '**/LICENSE'
       - 'terraform/**'
-      - '.github/workflows/terraform.yml'
+      - .github/workflows/terraform.yml
 
 jobs:
   build:
@@ -61,8 +61,8 @@ jobs:
         pip install wheel
         pip install -r requirements-dev.txt
         pip install -e .
-        playwrite install
-        playwrite install-deps
+        playwright install
+        playwright install-deps
 
     - name: Prepare FlaskBB
       run: |
@@ -84,7 +84,4 @@ jobs:
       with:
         name: code coverage report
         path: tests/htmlcov/
-
-
-
        

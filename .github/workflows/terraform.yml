@@ -1,71 +1,87 @@
-# This workflow will provision the infrastructure necessary to deploy our application.
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: terraform
+name: test
 
 on:
-    push:
-        branches: [ main ]
-        paths:
-            - 'terraform/*'
-            - '.github/workflows/terraform.yml'
-    pull_request:
-        branches: [ main ]
-        paths:
-            - 'terraform/*'
-            - '.github/workflows/terraform.yml'
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'docs/**'
+      - 'flaskbb/themes/**'
+      - '**.md'
+      - '**.rst'
+      - '**/CHANGES'
+      - '**/AUTHORS'
+      - '**/LICENSE'
+      - 'terraform/**'
+      - .github/workflows/terraform.yml
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - 'docs/**'
+      - 'flaskbb/themes/**'
+      - '**.md'
+      - '**.rst'
+      - '**/CHANGES'
+      - '**/AUTHORS'
+      - '**/LICENSE'
+      - 'terraform/**'
+      - .github/workflows/terraform.yml
+
 jobs:
-  format:
+  build:
 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10"]
 
-    name: Format
-    
     steps:
-      # Clone the repository.
-      - uses: actions/checkout@v2
-        with:
-          # This is required or we end up in detached head state & thus cannot push any changes.
-          ref: ${{ github.head_ref }}
-      # Download & set up the terraform CLI.
-      - name: Set up terraform CLI
-        uses: hashicorp/setup-terraform@v1
-        # CoRise TODO: run the format command fail the build or on pull-requests update the PR with formatted data
-  terraform:
-
-    runs-on: ubuntu-latest
-
-    name: Validate, Plan, and Apply
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_AWS_SECRET_ACCESS_KEY }}
+    - uses: actions/checkout@v2
     
-    steps:
-      - uses: actions/checkout@v2
-      # Download & set up the terraform CLI.
-      - name: Set up terraform CLI
-        uses: hashicorp/setup-terraform@v1
-      # Initialize terraform.
-      - name: terraform init
-        working-directory: ./terraform
-        id: init
-        run: terraform init -input=false
-      # CoRise TODO: Validate the terraform plan (if on a PR branch).
-      - name: terraform validate
-        working-directory: ./terraform
-        run: terraform validate
-      # CoRise TODO: Prepare the terraform plan (if on a PR branch).
-      - name: terraform plan
-        working-directory: ./terraform
-        run: terraform plan
-      # CoRise TODO: Fail the job if the plan failed
-      - name: pass or fail
-        uses: actions/github-script@v6
-      # CoRise TODO: Apply the generated plan (after merging).
-      - name: terraform apply
-        id: apply
-        working-directory: ./terraform
-        run: terraform apply
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Get pip cache dir
+      id: pip-cache
+      run: echo "::set-output name=dir::$(pip cache dir)"
 
+    - name: Cache pip
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.pip-cache.outputs.dir }}
+        key: pip|${{ runner.os }}|${{ matrix.python-version }}|${{ hashFiles('requirements*.txt') }}
 
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install wheel
+        pip install -r requirements-dev.txt
+        pip install -e .
+        playwright install
+        playwright install-deps
 
-
+    - name: Prepare FlaskBB
+      run: |
+        flaskbb translations compile
+    
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings.
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        
+    - name: Test with pytest
+      run: |
+        pytest --cov=./ --cov-report=html
+        
+    - name: Upload code coverage results
+      uses: actions/upload-artifact@v3
+      with:
+        name: code coverage report
+        path: tests/htmlcov/
+       
