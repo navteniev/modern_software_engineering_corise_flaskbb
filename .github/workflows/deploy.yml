@@ -13,29 +13,28 @@ jobs:
         runs-on: ubuntu-latest
         if: ${{ github.event.workflow_run.conclusion == 'success' }} # Only when test completed successfully 
         steps:
-            - name: Download latest build
-              uses: actions/download-artifact@v3
-              with: 
-                name: "flask-bb-artifact-file"
+          - name: Build binary distribution and upload to artifactory
+            run: |
+              zip -r "flaskbb_app-${{ github.sha }}.zip" ./flaskbb ./.ebextensions wsgi.py setup.py setup.cfg requirements.txt flaskbb.cfg celery_worker.py
 
-            - name: Congifure AWS Credentials
-              uses: aws-actions/configure-aws-credentials
-              with:
-                aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
-                aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
-                aws-region: "us-east-1" # CoRise TODO fill in the region that you will be using.
+          - name: Congifure AWS Credentials
+            uses: aws-actions/configure-aws-credentials
+            with:
+              aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
+              aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
+              aws-region: "us-east-1" # CoRise TODO fill in the region that you will be using.
 
-            - name: Upload application file to AWS
-              run: aws s3 cp your_application.zip s3://terraform-state-flaskbb-tanupriya-singh # CoRise TODO filling the name of the aprlication file and the name of the bucket you created
+          - name: Upload application file to AWS
+            run: aws s3 cp your_application.zip s3://terraform-state-flaskbb-tanupriya-singh # CoRise TODO filling the name of the aprlication file and the name of the bucket you created
 
-            - name: Create new application version
-              run: |  # CoRise TODO filling the name of the aprlication file and the name of the bucket you created
-                aws elasticbeanstalk create-application-version \
-                --application-name flask-bb-app \
-                --source-bundle S3Bucket="your_s3_bucket_name",S3Key="flaskbb_app-${{ github.sha }}.zip" \
-                --version-label "ver-${{ github.sha }}" \
-                --description "commit-sha-${{ github.sha }}"
+          - name: Create new application version
+            run: |  # CoRise TODO filling the name of the aprlication file and the name of the bucket you created
+              aws elasticbeanstalk create-application-version \
+              --application-name flask-bb-app \
+              --source-bundle S3Bucket="your_s3_bucket_name",S3Key="flaskbb_app-${{ github.sha }}.zip" \
+              --version-label "ver-${{ github.sha }}" \
+              --description "commit-sha-${{ github.sha }}"
 
-            # CoRise TODO fill in your_environment_name based on the environment created in terraform workflow
-            - name: Deploy application
-              run: aws elasticbeanstalk update-environment --environment-name us-east-1 --version-label "ver-${{ github.sha }}"
+          # CoRise TODO fill in your_environment_name based on the environment created in terraform workflow
+          - name: Deploy application
+            run: aws elasticbeanstalk update-environment --environment-name us-east-1 --version-label "ver-${{ github.sha }}"
