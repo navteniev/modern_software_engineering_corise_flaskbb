@@ -1,5 +1,5 @@
 resource "aws_elastic_beanstalk_application" "application" {
-    name = "flaskbb"  
+    name = "sdwailah-flaskbb"  
 }
 
 resource "aws_elastic_beanstalk_environment" "environment" {

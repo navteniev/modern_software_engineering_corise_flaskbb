@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
-    bucket = "terraform-state-flaskbb"
+    bucket = "terraform-state-flaskbb-sdwailah"
     key    = "core/terraform.tfstate"
-    region = "us-east-1"
+    region = "ap-southeast-2"
   }
 }
