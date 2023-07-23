@@ -379,6 +379,25 @@ class ManageForum(MethodView):
             forumsread=forumsread,
         )
 
+    
+
+
+class TopicManager(MethodView):
+    decorators = [
+        login_required,
+        allows.requires(
+            IsAtleastModeratorInForum(),
+            on_fail=FlashAndRedirect(
+                message=_("You are not allowed to manage this forum"),
+                level="danger",
+                endpoint=lambda *a, **k: url_for(
+                    "forum.view_forum",
+                    forum_id=k["forum_id"],
+                )
+            )
+        ),
+    ]
+
     # TODO(anr): Clean this up. @_@
     # CoRise TODO: refactor this method by extracting a class called TopicManager which contains the logic of this method.
     def post(self, forum_id, slug=None):  # noqa: C901
@@ -508,7 +527,6 @@ class ManageForum(MethodView):
         else:
             flash(_("Unknown action requested"), "danger")
             return redirect(mod_forum_url)
-
 
 class NewPost(MethodView):
     decorators = [
